@@ -27,6 +27,12 @@ class XmarieDriver:
     def click_debug_btn(self):
         self.find_element_by_id('debugBtn').click()
 
+    def click_continue_btn(self):
+        self.find_element_by_id('continueBtn').click()
+
+    def click_step_btn(self):
+        self.find_element_by_id('stepBtn').click()
+
     def replace_code_with(self, lines):
         codemirror = self.find_element_by_id('codemirror')
         line = codemirror.find_element_by_class_name('CodeMirror-line')

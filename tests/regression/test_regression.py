@@ -1,16 +1,19 @@
 import pytest
+from ts.util import to_register_label_format, assert_register_labels_content
 
 def test_run(xmarie_driver):
     xmarie_driver.toggle_breakpoints([4])
     xmarie_driver.click_run_btn()
-    assert xmarie_driver.get_label_text('AC') == "0 (0x0)"
-    assert xmarie_driver.get_label_text('PC') == "6 (0x6)"
-    assert xmarie_driver.get_label_text('X') == "0 (0x0)"
-    assert xmarie_driver.get_label_text('Y') == "0 (0x0)"
+    assert_register_labels_content(
+        xmarie_driver,
+        AC=to_register_label_format('0', '0x0'),
+        PC=to_register_label_format('6', '0x6'),
+        X=to_register_label_format('0', '0x0'),
+        Y=to_register_label_format('0', '0x0'),
+    )
 
 
 def test_debug(xmarie_driver):
-    import time
     xmarie_driver.replace_code_with([
         'Load X', 
         'Add Y', 
@@ -22,4 +25,22 @@ def test_debug(xmarie_driver):
     ])
     xmarie_driver.toggle_breakpoints([1, 2, 4])
     xmarie_driver.click_debug_btn()
-    
+    assert_register_labels_content(
+        xmarie_driver,
+        AC=to_register_label_format('0', '0x0'),
+    )
+    xmarie_driver.click_continue_btn()
+    assert_register_labels_content(
+        xmarie_driver,
+        AC=to_register_label_format('1', '0x1'),
+    )
+    xmarie_driver.click_step_btn()
+    assert_register_labels_content(
+        xmarie_driver,
+        AC=to_register_label_format('3', '0x3'),
+    )
+    xmarie_driver.click_continue_btn()
+    assert_register_labels_content(
+        xmarie_driver,
+        AC=to_register_label_format('6', '0x6'),
+    )
