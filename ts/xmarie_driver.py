@@ -33,6 +33,9 @@ class XmarieDriver:
     def click_step_btn(self):
         self.find_element_by_id('stepBtn').click()
 
+    def click_profile_btn(self):
+        self.find_element_by_id('profileBtn').click()
+
     def replace_code_with(self, lines):
         codemirror = self.find_element_by_id('codemirror')
         line = codemirror.find_element_by_class_name('CodeMirror-line')
@@ -42,6 +45,14 @@ class XmarieDriver:
         textarea.send_keys(Keys.DELETE)
         for line in lines:
             textarea.send_keys(f'{line}\n')
+
+    def set_input(self, lines):
+        input_area = self.find_element_by_id('inputArea')
+        input_area.click()
+        input_area.send_keys('\n'.join(lines))
+
+    def get_output_lines(self):
+        return self.find_element_by_id('output').text.split('\n')
 
     def __getattr__(self, *a, **kw):            
         return getattr(self.driver, *a, **kw)

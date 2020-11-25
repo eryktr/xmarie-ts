@@ -44,3 +44,45 @@ def test_debug(xmarie_driver):
         xmarie_driver,
         AC=to_register_label_format('6', '0x6'),
     )
+
+def test_sum(xmarie_driver):
+    xmarie_driver.replace_code_with([
+        'Loop, Load X',
+        'Store X_STORE',
+        'Load SUM',
+        'Add X_STORE',
+        'Store SUM',
+        'Load X_STORE',
+        'Add NEG_ONE',
+        'Store X',
+        'Skipcond 400',
+        'Jump Loop',
+        'Halt',
+        'X, DEC 10',
+        'X_STORE, DEC 0',
+        'SUM, DEC 0',
+        'NEG_ONE, HEX 0xFFFFF',
+    ])
+    xmarie_driver.click_run_btn()
+    variables = xmarie_driver.find_element_by_id('variables')
+    assert "SUM: 55" in variables.text
+    assert "X: 0" in variables.text
+
+
+@pytest.mark.parametrize('func', [
+    'click_debug_btn',
+    'click_run_btn',
+    'click_profile_btn',
+])
+def test_input_in_debug_run_and_profile(xmarie_driver, func):
+    xmarie_driver.set_input(['0x12345'])
+    xmarie_driver.replace_code_with([
+        'Input',
+        'Output',
+        'Halt',
+    ])
+    getattr(xmarie_driver, func)()
+
+    assert xmarie_driver.get_output_lines() == [
+        '0x12345'
+    ]
