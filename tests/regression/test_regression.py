@@ -3,11 +3,12 @@ from ts.util import to_register_label_format, assert_register_labels_content
 
 def test_run(xmarie_driver):
     xmarie_driver.toggle_breakpoints([4])
+    xmarie_driver.set_input(['0xA'])
     xmarie_driver.click_run_btn()
+
     assert_register_labels_content(
         xmarie_driver,
-        AC=to_register_label_format('0', '0x0'),
-        PC=to_register_label_format('6', '0x6'),
+        AC=to_register_label_format('55', '0x37'),
         X=to_register_label_format('0', '0x0'),
         Y=to_register_label_format('0', '0x0'),
     )
@@ -15,9 +16,9 @@ def test_run(xmarie_driver):
 
 def test_debug(xmarie_driver):
     xmarie_driver.replace_code_with([
-        'Load X', 
-        'Add Y', 
-        'Add Z', 
+        'Load X',
+        'Add Y',
+        'Add Z',
         'Halt',
         'X, DEC 1',
         'Y, DEC 2',
